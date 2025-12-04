@@ -73,7 +73,7 @@ cd ../..
 npm install
 npm run build
 
-# Create a tarball (creates nl-search-1.0.0.tgz)
+# Create a tarball (creates nl-search-<version>.tgz, e.g., nl-search-1.0.0.tgz)
 npm pack
 ```
 
@@ -82,8 +82,8 @@ npm pack
 # Navigate to this test-app directory
 cd examples/test-app
 
-# Install from the tarball
-npm install ../../nl-search-1.0.0.tgz
+# Install from the tarball (replace with your actual version)
+npm install ../../nl-search-*.tgz
 ```
 
 **Step 3: Run the test application**
@@ -93,7 +93,7 @@ npm start
 
 **Note:** If you make changes to nl-search, you must:
 1. Run `npm pack` again in the nl-search directory
-2. Reinstall in test-app: `npm install ../../nl-search-1.0.0.tgz`
+2. Reinstall in test-app: `npm install ../../nl-search-*.tgz`
 
 ---
 

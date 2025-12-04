@@ -8,8 +8,5 @@
   },
   "keywords": [],
   "author": "",
-  "license": "MIT",
-  "dependencies": {
-    "nl-search": "file:../../nl-search-1.0.0.tgz"
-  }
+  "license": "MIT"
 }

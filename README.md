@@ -74,12 +74,12 @@ npm run build
 npm pack
 ```
 
-This creates a file like `nl-search-1.0.0.tgz` in the current directory.
+This creates a file like `nl-search-<version>.tgz` (e.g., `nl-search-1.0.0.tgz`) in the current directory.
 
 2. In your test application, install the tarball:
 ```bash
 cd /path/to/your-test-app
-npm install /path/to/nl-search/nl-search-1.0.0.tgz
+npm install /path/to/nl-search/nl-search-*.tgz
 ```
 
 3. Use the package normally:
