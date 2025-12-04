@@ -21,13 +21,13 @@ npm install nl-search
 
 This package is **fully browser-compatible** and works seamlessly with modern bundlers like Vite, Webpack, and others. Unlike many NLP libraries, nl-search uses pure JavaScript dependencies with no Node.js-specific modules.
 
-### Zero Configuration Required 🎉
+### Basic Setup
 
 Starting from version 1.1.0, this package uses browser-native NLP libraries:
 - **compromise** - lightweight NLP for tokenization and stemming
 - **@skyra/jaro-winkler** - pure JavaScript string similarity (zero dependencies)
 
-No special bundler configuration needed! Just install and use:
+Just install and use:
 
 ```javascript
 import { search } from 'nl-search';
@@ -47,6 +47,33 @@ The package works out of the box in:
 - ✅ Parcel
 - ✅ esbuild
 - ✅ Any modern bundler
+
+### Vite Configuration (Recommended)
+
+If you encounter "Outdated Optimize Dep" errors in Vite (common with Vue, React, or Svelte projects), add this to your `vite.config.js`:
+
+```javascript
+import { defineConfig } from 'vite'
+
+export default defineConfig({
+  optimizeDeps: {
+    include: [
+      'nl-search',
+      'compromise',
+      '@skyra/jaro-winkler'
+    ]
+  }
+})
+```
+
+This explicitly tells Vite to pre-bundle these dependencies, preventing cache-related errors. See `examples/vite.config.example.js` for a complete example.
+
+**Troubleshooting Vite Issues:**
+
+If you still see errors after updating your config:
+1. Delete your `node_modules/.vite` cache directory
+2. Restart your dev server
+3. If using pnpm, add `public-hoist-pattern[]=*compromise*` to `.npmrc`
 
 ## Local Development & Testing
 

@@ -1,16 +1,22 @@
 /**
  * Example Vite configuration for using nl-search in a browser environment
  * 
- * Starting from nl-search v1.1.0, the package uses browser-native NLP libraries
- * (compromise and @skyra/jaro-winkler) with no Node.js-specific dependencies.
+ * While nl-search uses browser-native NLP libraries (compromise and @skyra/jaro-winkler),
+ * Vite may need to optimize these dependencies explicitly to avoid "Outdated Optimize Dep" errors.
  * 
- * No special Vite configuration is needed! This file is kept for reference only.
- * The package works out of the box with Vite, Webpack, Rollup, and other bundlers.
+ * This configuration is recommended for Vite-based projects (Vue, React, etc.).
  */
 
 import { defineConfig } from 'vite'
 
 export default defineConfig({
-  // No special configuration needed for nl-search!
-  // The package is fully browser-compatible.
+  optimizeDeps: {
+    // Explicitly include nl-search and its dependencies for optimization
+    // This prevents "Outdated Optimize Dep" errors in Vite
+    include: [
+      'nl-search',
+      'compromise',
+      '@skyra/jaro-winkler'
+    ]
+  }
 })
