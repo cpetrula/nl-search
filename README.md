@@ -17,6 +17,136 @@ A powerful npm package for searching multi-level arrays of JSON objects using na
 npm install nl-search
 ```
 
+## Local Development & Testing
+
+If you want to test this package locally without publishing it to the NPM registry, you have several options:
+
+### Option 1: Using npm link (Recommended for Development)
+
+This is the best approach when you're actively developing and want live updates in your test app.
+
+1. In the `nl-search` package directory, build the package and create a global link:
+```bash
+cd /path/to/nl-search
+npm install
+npm run build
+npm link
+```
+
+2. In your test application directory, link to the package:
+```bash
+cd /path/to/your-test-app
+npm link nl-search
+```
+
+3. Now you can use the package in your test app:
+```javascript
+const { search } = require('nl-search');
+// or
+import { search } from 'nl-search';
+```
+
+4. When you make changes to `nl-search`, just rebuild:
+```bash
+cd /path/to/nl-search
+npm run build
+# Changes are automatically available in your test app
+```
+
+5. To unlink when you're done:
+```bash
+cd /path/to/your-test-app
+npm unlink nl-search
+
+cd /path/to/nl-search
+npm unlink
+```
+
+### Option 2: Using npm pack
+
+This method creates a tarball that you can install like a published package.
+
+1. In the `nl-search` directory, build and create a tarball:
+```bash
+cd /path/to/nl-search
+npm install
+npm run build
+npm pack
+```
+
+This creates a file like `nl-search-1.0.0.tgz` in the current directory.
+
+2. In your test application, install the tarball:
+```bash
+cd /path/to/your-test-app
+npm install /path/to/nl-search/nl-search-1.0.0.tgz
+```
+
+3. Use the package normally:
+```javascript
+const { search } = require('nl-search');
+```
+
+**Note:** You need to run `npm pack` and reinstall every time you make changes.
+
+### Option 3: Direct File Path Installation
+
+You can install directly from the local file path.
+
+1. Build the package:
+```bash
+cd /path/to/nl-search
+npm install
+npm run build
+```
+
+2. In your test application, install using the file path:
+```bash
+cd /path/to/your-test-app
+npm install /path/to/nl-search
+```
+
+Or add it to your `package.json`:
+```json
+{
+  "dependencies": {
+    "nl-search": "file:../nl-search"
+  }
+}
+```
+
+Then run `npm install`.
+
+**Note:** Like npm pack, you need to rebuild and reinstall after changes.
+
+### Running the Examples
+
+The package includes example files that demonstrate usage:
+
+```bash
+cd /path/to/nl-search
+npm install
+npm run build
+node examples/demo.js
+node examples/usage.js
+```
+
+These examples show various natural language queries and search patterns.
+
+### Testing Your Changes
+
+Before using the package in your application, always run the tests:
+
+```bash
+npm test
+```
+
+To lint your code:
+
+```bash
+npm run lint
+```
+
 ## Quick Start
 
 ```javascript
