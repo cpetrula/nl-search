@@ -19,94 +19,54 @@ npm install nl-search
 
 ## Browser Usage (Vite, Webpack, etc.)
 
-If you're using this package in a browser environment with a bundler like Vite or Webpack, you may encounter an error related to `webworker-threads`:
+This package is fully compatible with browser environments and modern bundlers like Vite, Webpack, and others. The package imports only the specific NLP modules it needs from the `natural` library, avoiding Node.js-specific dependencies that can cause bundling issues.
 
+### No Special Configuration Required (v1.0.0+)
+
+Starting from version 1.0.0, this package uses optimized imports that are compatible with browser bundlers out of the box. You can use it in your Vue.js, React, or other browser-based applications without any special configuration.
+
+```javascript
+import { search } from 'nl-search';
+
+const data = [
+  { name: 'John Doe', role: 'Developer' },
+  { name: 'Jane Smith', role: 'Designer' }
+];
+
+const results = search(data, 'who is a developer?');
 ```
-Uncaught Error: Dynamic require of "webworker-threads" is not supported
-```
 
-This happens because the `natural` library (a dependency) includes classifier modules that require Node.js-specific modules. However, `nl-search` doesn't use these classifier modules.
+### Troubleshooting (For Older Versions or Edge Cases)
 
-### Solution for Vite
+If you're using an older version or encounter issues with `webworker-threads`, consider upgrading to the latest version. If you still encounter issues, you can add the following configuration:
 
-Add the following to your `vite.config.js` or `vite.config.ts`:
+#### Vite Configuration
+
+Add to your `vite.config.js`:
 
 ```javascript
 export default {
   optimizeDeps: {
     exclude: ['natural']
-  },
-  resolve: {
-    alias: {
-      // Stub out the problematic modules
-      'webworker-threads': 'webworker-threads-stub'
-    }
-  },
-  define: {
-    'process.env': {}
   }
 }
 ```
 
-Or use the `vite-plugin-node-polyfills` plugin:
+See `examples/vite.config.example.js` for a complete example.
 
-```bash
-npm install --save-dev vite-plugin-node-polyfills
-```
+#### Webpack Configuration
 
-```javascript
-import { defineConfig } from 'vite'
-import { nodePolyfills } from 'vite-plugin-node-polyfills'
-
-export default defineConfig({
-  plugins: [
-    nodePolyfills({
-      // To exclude specific polyfills, add them to this list
-      exclude: [
-        'fs', // Excludes the polyfill for `fs` and `node:fs`
-      ],
-      // Whether to polyfill specific globals
-      globals: {
-        Buffer: true,
-        global: true,
-        process: true,
-      },
-      // Whether to polyfill `node:` protocol imports
-      protocolImports: true,
-    })
-  ],
-  optimizeDeps: {
-    exclude: ['natural']
-  }
-})
-```
-
-### Solution for Webpack
-
-Add the following to your `webpack.config.js`:
+Add to your `webpack.config.js`:
 
 ```javascript
 module.exports = {
   resolve: {
     fallback: {
-      "webworker-threads": false,
-      "fs": false,
-      "path": false
+      "webworker-threads": false
     }
   }
 }
 ```
-
-### Alternative: Create a stub file
-
-Create a file `webworker-threads-stub.js` in your project:
-
-```javascript
-// Stub for webworker-threads - not needed in browser
-export default {};
-```
-
-Then configure your bundler to use this stub instead of the actual `webworker-threads` module.
 
 ## Local Development & Testing
 
