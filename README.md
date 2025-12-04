@@ -41,8 +41,6 @@ npm link nl-search
 
 3. Now you can use the package in your test app:
 ```javascript
-const { search } = require('nl-search');
-// or
 import { search } from 'nl-search';
 ```
 
@@ -84,7 +82,7 @@ npm install /path/to/nl-search/nl-search-*.tgz
 
 3. Use the package normally:
 ```javascript
-const { search } = require('nl-search');
+import { search } from 'nl-search';
 ```
 
 **Note:** You need to run `npm pack` and reinstall every time you make changes.

@@ -1,4 +1,4 @@
-const { search } = require('../dist/index');
+import { search } from '../dist/index.js';
 
 // Example 1: Employee Database
 console.log('=== Example 1: Employee Database ===\n');
