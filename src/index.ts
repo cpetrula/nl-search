@@ -1,9 +1,8 @@
-// Import specific submodules from natural to avoid pulling in classifiers
-// which require Node.js-specific dependencies like webworker-threads.
-// This enables browser compatibility when using bundlers like Vite or Webpack.
-import { WordTokenizer } from 'natural/lib/natural/tokenizers/index.js';
-import { PorterStemmer } from 'natural/lib/natural/stemmers/index.js';
-import { JaroWinklerDistance } from 'natural/lib/natural/distance/index.js';
+// Import browser-compatible NLP libraries
+// compromise: a lightweight NLP library that works in browsers
+// @skyra/jaro-winkler: a pure implementation of Jaro-Winkler distance with no dependencies
+import nlp from 'compromise';
+import { jaroWinkler } from '@skyra/jaro-winkler';
 
 /**
  * Represents a search result with the matched node and its parent path
@@ -48,10 +47,34 @@ export interface SearchOptions {
  * Natural Language Search for JSON objects
  */
 export class NLSearch {
-  private tokenizer: WordTokenizer;
-
   constructor() {
-    this.tokenizer = new WordTokenizer();
+    // No initialization needed - compromise is used directly
+  }
+
+  /**
+   * Tokenize text into words using compromise
+   */
+  private tokenize(text: string): string[] {
+    const doc = nlp(text);
+    // Use text() method which strips punctuation
+    const tokens: string[] = [];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    doc.terms().forEach((term: any) => {
+      tokens.push(term.text());
+    });
+    return tokens;
+  }
+
+  /**
+   * Stem a word using compromise's normalization
+   * This reduces words to their root form (e.g., "running" -> "run")
+   */
+  private stem(word: string): string {
+    const doc = nlp(word);
+    // Use normalized form which handles verb infinitives and noun singulars
+    // Get the first term to ensure we only process a single word
+    const firstTerm = doc.terms().first();
+    return firstTerm.found ? firstTerm.out('normal') : word;
   }
 
   /**
@@ -73,11 +96,11 @@ export class NLSearch {
     const normalizedQuery = caseSensitive ? query : query.toLowerCase();
     
     // Tokenize the query
-    const queryTokens = this.tokenizer.tokenize(normalizedQuery) || [];
+    const queryTokens = this.tokenize(normalizedQuery);
     // Only stem if case insensitive (stemming normalizes case)
     const stemmedQuery = caseSensitive 
       ? queryTokens 
-      : queryTokens.map(token => PorterStemmer.stem(token));
+      : queryTokens.map(token => this.stem(token));
 
     const results: SearchResult[] = [];
     
@@ -178,15 +201,15 @@ export class NLSearch {
     }
 
     // 2. Jaro-Winkler distance for overall similarity
-    const jaroScore = JaroWinklerDistance(query, normalizedContent, {});
+    const jaroScore = jaroWinkler(query, normalizedContent);
     scores.push(jaroScore);
 
     // 3. Token-based similarity using TF-IDF concepts
-    const contentTokens = this.tokenizer.tokenize(normalizedContent) || [];
+    const contentTokens = this.tokenize(normalizedContent);
     // Only stem if case insensitive
     const stemmedContent = options.caseSensitive
       ? contentTokens
-      : contentTokens.map(token => PorterStemmer.stem(token));
+      : contentTokens.map(token => this.stem(token));
     
     // Calculate token overlap
     const matchingTokens = stemmedQuery.filter(qToken => 
