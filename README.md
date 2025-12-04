@@ -17,6 +17,57 @@ A powerful npm package for searching multi-level arrays of JSON objects using na
 npm install nl-search
 ```
 
+## Browser Usage (Vite, Webpack, etc.)
+
+This package is fully compatible with browser environments and modern bundlers like Vite, Webpack, and others. The package imports only the specific NLP modules it needs from the `natural` library, avoiding Node.js-specific dependencies that can cause bundling issues.
+
+### No Special Configuration Required (v1.0.0+)
+
+Starting from version 1.0.0, this package uses optimized imports that are compatible with browser bundlers out of the box. You can use it in your Vue.js, React, or other browser-based applications without any special configuration.
+
+```javascript
+import { search } from 'nl-search';
+
+const data = [
+  { name: 'John Doe', role: 'Developer' },
+  { name: 'Jane Smith', role: 'Designer' }
+];
+
+const results = search(data, 'who is a developer?');
+```
+
+### Troubleshooting (For Older Versions or Edge Cases)
+
+If you're using an older version or encounter issues with `webworker-threads`, consider upgrading to the latest version. If you still encounter issues, you can add the following configuration:
+
+#### Vite Configuration
+
+Add to your `vite.config.js`:
+
+```javascript
+export default {
+  optimizeDeps: {
+    exclude: ['natural']
+  }
+}
+```
+
+See `examples/vite.config.example.js` for a complete example.
+
+#### Webpack Configuration
+
+Add to your `webpack.config.js`:
+
+```javascript
+module.exports = {
+  resolve: {
+    fallback: {
+      "webworker-threads": false
+    }
+  }
+}
+```
+
 ## Local Development & Testing
 
 If you want to test this package locally without publishing it to the NPM registry, you have several options:

@@ -1,4 +1,9 @@
-import natural from 'natural';
+// Import specific submodules from natural to avoid pulling in classifiers
+// which require Node.js-specific dependencies like webworker-threads.
+// This enables browser compatibility when using bundlers like Vite or Webpack.
+import { WordTokenizer } from 'natural/lib/natural/tokenizers/index.js';
+import { PorterStemmer } from 'natural/lib/natural/stemmers/index.js';
+import { JaroWinklerDistance } from 'natural/lib/natural/distance/index.js';
 
 /**
  * Represents a search result with the matched node and its parent path
@@ -43,10 +48,10 @@ export interface SearchOptions {
  * Natural Language Search for JSON objects
  */
 export class NLSearch {
-  private tokenizer: natural.WordTokenizer;
+  private tokenizer: WordTokenizer;
 
   constructor() {
-    this.tokenizer = new natural.WordTokenizer();
+    this.tokenizer = new WordTokenizer();
   }
 
   /**
@@ -72,7 +77,7 @@ export class NLSearch {
     // Only stem if case insensitive (stemming normalizes case)
     const stemmedQuery = caseSensitive 
       ? queryTokens 
-      : queryTokens.map(token => natural.PorterStemmer.stem(token));
+      : queryTokens.map(token => PorterStemmer.stem(token));
 
     const results: SearchResult[] = [];
     
@@ -173,7 +178,7 @@ export class NLSearch {
     }
 
     // 2. Jaro-Winkler distance for overall similarity
-    const jaroScore = natural.JaroWinklerDistance(query, normalizedContent, {});
+    const jaroScore = JaroWinklerDistance(query, normalizedContent, {});
     scores.push(jaroScore);
 
     // 3. Token-based similarity using TF-IDF concepts
@@ -181,7 +186,7 @@ export class NLSearch {
     // Only stem if case insensitive
     const stemmedContent = options.caseSensitive
       ? contentTokens
-      : contentTokens.map(token => natural.PorterStemmer.stem(token));
+      : contentTokens.map(token => PorterStemmer.stem(token));
     
     // Calculate token overlap
     const matchingTokens = stemmedQuery.filter(qToken => 
