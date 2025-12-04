@@ -1,31 +1,24 @@
 /**
  * Example Vite configuration for using nl-search in a browser environment
  * 
- * This configuration addresses the "Dynamic require of 'webworker-threads' is not supported" error
- * that occurs when the natural library's classifier modules are included in the bundle.
+ * Starting from nl-search v1.0.0, the package uses selective imports from the natural library,
+ * which should work with most bundlers without special configuration.
  * 
- * Copy this configuration to your project's vite.config.js file.
+ * This example configuration is provided for edge cases or if you encounter issues.
+ * In most cases, you won't need any special Vite configuration.
  */
 
 import { defineConfig } from 'vite'
 
 export default defineConfig({
-  // Exclude natural from optimization to prevent bundling issues
-  optimizeDeps: {
-    exclude: ['natural']
-  },
+  // Optional: Only needed if you encounter bundling issues
+  // optimizeDeps: {
+  //   exclude: ['natural']
+  // },
   
-  // Define polyfills for Node.js globals
+  // Define polyfills for Node.js globals if needed
   define: {
     'process.env': {},
     'global': 'globalThis'
-  },
-  
-  // Configure module resolution
-  resolve: {
-    alias: {
-      // Optional: stub out problematic modules if needed
-      // 'webworker-threads': '/path/to/webworker-threads-stub.js'
-    }
   }
 })

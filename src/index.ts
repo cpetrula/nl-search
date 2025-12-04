@@ -1,3 +1,6 @@
+// Import specific submodules from natural to avoid pulling in classifiers
+// which require Node.js-specific dependencies like webworker-threads.
+// This enables browser compatibility when using bundlers like Vite or Webpack.
 import { WordTokenizer } from 'natural/lib/natural/tokenizers/index.js';
 import { PorterStemmer } from 'natural/lib/natural/stemmers/index.js';
 import { JaroWinklerDistance } from 'natural/lib/natural/distance/index.js';
