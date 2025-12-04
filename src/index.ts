@@ -58,6 +58,7 @@ export class NLSearch {
     const doc = nlp(text);
     // Use text() method which strips punctuation
     const tokens: string[] = [];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     doc.terms().forEach((term: any) => {
       tokens.push(term.text());
     });
@@ -71,7 +72,9 @@ export class NLSearch {
   private stem(word: string): string {
     const doc = nlp(word);
     // Use normalized form which handles verb infinitives and noun singulars
-    return doc.terms().out('normal');
+    // Get the first term to ensure we only process a single word
+    const firstTerm = doc.terms().first();
+    return firstTerm.found ? firstTerm.out('normal') : word;
   }
 
   /**
