@@ -201,7 +201,7 @@ console.log(results);
 ## Troubleshooting
 
 **Error: Cannot find module 'nl-search'**
-- Make sure you've run `npm link nl-search`, `npm install ../../nl-search-1.0.0.tgz`, or `npm install ../..` depending on your chosen method
+- Make sure you've run `npm link nl-search`, `npm install ../../nl-search-*.tgz`, or `npm install ../..` depending on your chosen method
 - Verify that nl-search was built: check that `../../dist/` exists
 
 **Changes not showing up**
