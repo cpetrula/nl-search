@@ -4,7 +4,6 @@
   "description": "Search multi-level array of JSON objects using natural language",
   "type": "module",
   "main": "dist/index.js",
-  "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
