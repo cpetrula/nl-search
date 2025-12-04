@@ -1,7 +1,7 @@
 // Example test application for nl-search
 // This demonstrates how to use nl-search in your own application
 
-const { search, NLSearch } = require('nl-search');
+import { search, NLSearch } from 'nl-search';
 
 console.log('╔════════════════════════════════════════════════════════════╗');
 console.log('║   Testing nl-search in Local Application                  ║');

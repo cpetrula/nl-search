@@ -1,4 +1,4 @@
-const { search } = require('../dist/index');
+import { search } from '../dist/index.js';
 
 console.log('╔════════════════════════════════════════════════════════════╗');
 console.log('║     Natural Language JSON Search - Demo                   ║');
