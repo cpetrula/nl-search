@@ -44,11 +44,9 @@ export interface SearchOptions {
  */
 export class NLSearch {
   private tokenizer: natural.WordTokenizer;
-  private tfidf: natural.TfIdf;
 
   constructor() {
     this.tokenizer = new natural.WordTokenizer();
-    this.tfidf = new natural.TfIdf();
   }
 
   /**
@@ -199,26 +197,30 @@ export class NLSearch {
     scores.push(diceScore);
 
     // Weighted average of all scores
-    // Exact match gets highest weight, then token matching, then fuzzy matching
-    const weights = scores.length === 4 
+    // Weights depend on whether we have an exact match
+    const hasExactMatch = scores.length === 4;
+    const weights = hasExactMatch
       ? [0.4, 0.2, 0.3, 0.1]  // [exact, jaro, token, dice]
       : [0.3, 0.4, 0.3];       // [jaro, token, dice]
 
     let weightedScore = 0;
-    let totalWeight = 0;
     scores.forEach((score, index) => {
-      const weight = weights[index] || 0.25;
-      weightedScore += score * weight;
-      totalWeight += weight;
+      weightedScore += score * weights[index];
     });
 
-    return totalWeight > 0 ? weightedScore / totalWeight : 0;
+    return weightedScore;
   }
 
   /**
    * Extract searchable text content from a node
    */
-  private extractTextContent(node: any, searchKeys: boolean, caseSensitive: boolean): string {
+  private extractTextContent(node: any, searchKeys: boolean, caseSensitive: boolean, depth: number = 0): string {
+    // Limit recursion depth to prevent stack overflow
+    const MAX_DEPTH = 50;
+    if (depth > MAX_DEPTH) {
+      return '';
+    }
+
     const parts: string[] = [];
 
     if (typeof node === 'string') {
@@ -229,7 +231,7 @@ export class NLSearch {
       if (Array.isArray(node)) {
         // For arrays, extract text from all elements
         node.forEach(item => {
-          const text = this.extractTextContent(item, searchKeys, caseSensitive);
+          const text = this.extractTextContent(item, searchKeys, caseSensitive, depth + 1);
           if (text) parts.push(text);
         });
       } else {
@@ -238,9 +240,9 @@ export class NLSearch {
           if (searchKeys) {
             parts.push(key);
           }
-          if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
-            parts.push(String(value));
-          }
+          // Recursively extract from nested objects and arrays
+          const text = this.extractTextContent(value, false, caseSensitive, depth + 1);
+          if (text) parts.push(text);
         });
       }
     }
