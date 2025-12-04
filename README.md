@@ -19,11 +19,15 @@ npm install nl-search
 
 ## Browser Usage (Vite, Webpack, etc.)
 
-This package is fully compatible with browser environments and modern bundlers like Vite, Webpack, and others. The package imports only the specific NLP modules it needs from the `natural` library, avoiding Node.js-specific dependencies that can cause bundling issues.
+This package is **fully browser-compatible** and works seamlessly with modern bundlers like Vite, Webpack, and others. Unlike many NLP libraries, nl-search uses pure JavaScript dependencies with no Node.js-specific modules.
 
-### No Special Configuration Required (v1.0.0+)
+### Zero Configuration Required 🎉
 
-Starting from version 1.0.0, this package uses optimized imports that are compatible with browser bundlers out of the box. You can use it in your Vue.js, React, or other browser-based applications without any special configuration.
+Starting from version 1.1.0, this package uses browser-native NLP libraries:
+- **compromise** - lightweight NLP for tokenization and stemming
+- **@skyra/jaro-winkler** - pure JavaScript string similarity (zero dependencies)
+
+No special bundler configuration needed! Just install and use:
 
 ```javascript
 import { search } from 'nl-search';
@@ -36,37 +40,13 @@ const data = [
 const results = search(data, 'who is a developer?');
 ```
 
-### Troubleshooting (For Older Versions or Edge Cases)
-
-If you're using an older version or encounter issues with `webworker-threads`, consider upgrading to the latest version. If you still encounter issues, you can add the following configuration:
-
-#### Vite Configuration
-
-Add to your `vite.config.js`:
-
-```javascript
-export default {
-  optimizeDeps: {
-    exclude: ['natural']
-  }
-}
-```
-
-See `examples/vite.config.example.js` for a complete example.
-
-#### Webpack Configuration
-
-Add to your `webpack.config.js`:
-
-```javascript
-module.exports = {
-  resolve: {
-    fallback: {
-      "webworker-threads": false
-    }
-  }
-}
-```
+The package works out of the box in:
+- ✅ Vite
+- ✅ Webpack
+- ✅ Rollup
+- ✅ Parcel
+- ✅ esbuild
+- ✅ Any modern bundler
 
 ## Local Development & Testing
 
@@ -310,17 +290,19 @@ const results = search(data, 'frontend team');
 
 ## How It Works
 
-nl-search uses multiple NLP techniques to understand your queries:
+nl-search uses multiple NLP techniques powered by browser-compatible libraries:
 
-1. **Tokenization**: Breaks queries and content into words
-2. **Stemming**: Reduces words to their root form (e.g., "running" → "run")
+1. **Tokenization**: Breaks queries and content into words using [compromise](https://github.com/spencermountain/compromise)
+2. **Stemming**: Reduces words to their root form (e.g., "running" → "run") using compromise's normalization
 3. **Similarity Scoring**: Uses algorithms like:
    - Exact phrase matching
-   - Jaro-Winkler distance
+   - Jaro-Winkler distance (via [@skyra/jaro-winkler](https://github.com/skyra-project/jaro-winkler))
    - Token overlap analysis
    - Dice coefficient
 
 Results are ranked by relevance, with exact matches scoring highest.
+
+All libraries are pure JavaScript with zero Node.js dependencies, ensuring full browser compatibility.
 
 ## Examples
 
